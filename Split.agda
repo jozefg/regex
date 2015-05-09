@@ -1,8 +1,8 @@
 module Split where
-open import Data.List using (List ; _∷_ ; [] ; _++_)
-open import Relation.Binary.PropositionalEquality
-open import Relation.Nullary
-open import Data.Empty using (⊥)
+open import Data.List                             using (List ; _∷_ ; [] ; _++_)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
+open import Relation.Nullary                      using (Dec; yes; no)
+open import Data.Empty                            using (⊥)
 
 data Split {A : Set} : List A → List A → List A → Set where
   nil  : (s : List A) → Split s [] s
