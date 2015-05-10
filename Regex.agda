@@ -87,10 +87,10 @@ decThen : (r₁ r₂ : Regex)(s s₁ s₂ : String)(sp : Split s s₁ s₂)
         → Dec (ThenR r₁ r₂ s₁ s₂)
 
 decStar r s .[] .s (nil .s) = no (λ ())
-decStar r .(c ∷ s) (.c ∷ s₁) s₂ (cons c s sp) with match (c ∷ s₁) r | match s₂ (star r)
-decStar r .(c ∷ s) (.c ∷ s₁) s₂ (cons c s sp) | yes p | yes p₁ = yes (rstar c s₁ s₂ p p₁)
-decStar r .(c ∷ s) (.c ∷ s₁) s₂ (cons c s sp) | yes p | no ¬p = no (λ p → ¬p (srπ₂ p))
-decStar r .(c ∷ s) (.c ∷ s₁) s₂ (cons c s sp) | no ¬p | p' = no (λ p → ¬p (srπ₁ p))
+decStar r ._ (.c ∷ s₁) s₂ (cons c s sp) with match (c ∷ s₁) r | match s₂ (star r)
+decStar r ._ (._ ∷ _) s₂ (cons c s sp) | yes p | yes p₁ = yes (rstar _ _ _ p p₁)
+decStar r ._ (._ ∷ _) s₂ (cons c s sp) | yes _ | no ¬p = no (λ p → ¬p (srπ₂ p))
+decStar r ._ (._ ∷ _) s₂ (cons c s sp) | no ¬p | p' = no (λ p → ¬p (srπ₁ p))
 
 decThen r₁ r₂ s s₁ s₂ sp with match s₁ r₁ | match s₂ r₂
 decThen r₁ r₂ s s₁ s₂ sp | yes p | yes p₁ = yes (rthen p p₁)
@@ -133,7 +133,8 @@ match (x ∷ s) (star r) | no ¬p = no contra
           ¬p (exists (x ∷ s₁) s2 (cons x s x₁) (rstar x s₁ s2 p p₁))
 
 match s (then r₁ r₂) with decHasSplit s (decThen r₁ r₂ s)
-match s (then r₁ r₂) | yes (exists s₁ s₂ sp (rthen x x₁)) = yes (then r₁ r₂ s s₁ s₂ sp x x₁)
+match s (then r₁ r₂) | yes (exists s₁ s₂ sp (rthen x x₁)) =
+  yes (then r₁ r₂ s s₁ s₂ sp x x₁)
 match s (then r₁ r₂) | no ¬p = no contra
   where contra : s ∈ then r₁ r₂ → ⊥
         contra (then .r₁ .r₂ .s s1 s2 x p p₁) = ¬p (exists s1 s2 x (rthen p p₁))
